@@ -1,0 +1,97 @@
+:root {
+  color-scheme: light dark;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.5rem;
+}
+
+.layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.sections-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.section-card {
+  border: 1px solid #80808066;
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: left;
+  width: 100%;
+}
+
+.section-card.active {
+  outline: 2px solid #3f82ff;
+}
+
+.toolbar {
+  margin-bottom: 0.75rem;
+}
+
+.file-label {
+  border: 1px solid #80808066;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+}
+
+#importFile {
+  display: none;
+}
+
+.bookmark-form {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.bookmark-form label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.bookmark-form input,
+.bookmark-form button {
+  border: 1px solid #80808099;
+  border-radius: 6px;
+  font: inherit;
+  padding: 0.5rem;
+}
+
+.bookmark-form button {
+  cursor: pointer;
+}
+
+.bookmarks-list {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bookmark-item {
+  border: 1px solid #80808044;
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+
+.bookmark-item a {
+  text-decoration: none;
+}
