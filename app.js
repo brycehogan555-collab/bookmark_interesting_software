@@ -174,56 +174,37 @@ function normalizeUrl(candidate) {
 }
 
 function parseSafariBookmarks(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
   const sections = {};
-  const folderHeaders = Array.from(doc.querySelectorAll("h3"));
+  let currentSection = "Imported";
+  const tokenPattern = /<h3[^>]*>([\s\S]*?)<\/h3>|<a[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let match;
 
-  for (const header of folderHeaders) {
-    const section = sanitizeSection(header.textContent || "");
-    if (!section) {
+  while ((match = tokenPattern.exec(html)) !== null) {
+    const [, folderName, href, linkText] = match;
+    if (folderName) {
+      const sectionName = sanitizeSection(folderName);
+      currentSection = sectionName || "Imported";
       continue;
     }
 
-    const bookmarks = [];
-    let next = header.parentElement?.nextElementSibling;
-    if (!next || next.tagName !== "DL") {
-      next = header.nextElementSibling;
-    }
-    if (!next || next.tagName !== "DL") {
+    if (!href || !linkText) {
       continue;
     }
 
-    const links = Array.from(next.querySelectorAll("a[href]"));
-    for (const link of links) {
-      const title = (link.textContent || "").trim();
-      const href = (link.getAttribute("href") || "").trim();
-      if (!title || !isSafeUrl(href)) {
-        continue;
-      }
-      bookmarks.push({ title, url: normalizeUrl(href) });
+    const title = linkText.trim();
+    const url = href.trim();
+    if (!title || !isSafeUrl(url)) {
+      continue;
     }
 
-    if (bookmarks.length > 0) {
-      sections[section] = bookmarks;
+    if (!sections[currentSection]) {
+      sections[currentSection] = [];
     }
+    sections[currentSection].push({ title, url: normalizeUrl(url) });
   }
 
   if (Object.keys(sections).length > 0) {
     return sections;
   }
-
-  const fallbackLinks = Array.from(doc.querySelectorAll("a[href]"));
-  if (fallbackLinks.length === 0) {
-    return sections;
-  }
-
-  sections.Imported = fallbackLinks
-    .map((link) => ({
-      title: (link.textContent || "").trim(),
-      url: (link.getAttribute("href") || "").trim()
-    }))
-    .filter((bookmark) => bookmark.title && isSafeUrl(bookmark.url))
-    .map((bookmark) => ({ title: bookmark.title, url: normalizeUrl(bookmark.url) }));
   return sections;
 }
